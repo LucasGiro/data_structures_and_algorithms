@@ -85,7 +85,6 @@ void tablahash_destruir(TablaHash tabla)
 
 /**
  * Inserta un dato en la tabla, o lo reemplaza si ya se encontraba.
- * IMPORTANTE: La implementacion no maneja colisiones.
  */
 void tablahash_insertar(TablaHash tabla, void *dato)
 {
@@ -102,13 +101,16 @@ void tablahash_insertar(TablaHash tabla, void *dato)
       tabla->numElems++;
       tabla->elems[idx].dato = tabla->copia(dato);
       insertado = 1;
-    } else if (tabla->elems[idx].deleted) {
+    }
+    else if (tabla->elems[idx].deleted)
+    {
       tabla->numElems++;
       tabla->elems[idx].dato = tabla->copia(dato);
       tabla->elems[idx].deleted = 0;
       insertado = 1;
-    // Sobrescribir el dato si el mismo ya se encontraba en la tabla.
-    } else if (tabla->comp(tabla->elems[idx].dato, dato) == 0)
+      // Sobrescribir el dato si el mismo ya se encontraba en la tabla.
+    }
+    else if (tabla->comp(tabla->elems[idx].dato, dato) == 0)
     {
       tabla->destr(tabla->elems[idx].dato);
       tabla->elems[idx].dato = tabla->copia(dato);
@@ -137,12 +139,14 @@ void *tablahash_buscar(TablaHash tabla, void *dato)
     unsigned idx = (tabla->hash(dato) + k) % tabla->capacidad;
 
     // Retornar NULL si la casilla estaba vacia.
-    if (tabla->elems[idx].dato == NULL){
+    if (tabla->elems[idx].dato == NULL)
+    {
       elem = NULL;
       encontrado = 1;
     }
     // Retornar el dato de la casilla si hay concidencia.
-    else if (tabla->comp(tabla->elems[idx].dato, dato) == 0 && !tabla->elems[idx].deleted) {
+    else if (tabla->comp(tabla->elems[idx].dato, dato) == 0 && !tabla->elems[idx].deleted)
+    {
       elem = tabla->elems[idx].dato;
       encontrado = 1;
     }
@@ -157,20 +161,30 @@ void *tablahash_buscar(TablaHash tabla, void *dato)
  */
 void tablahash_eliminar(TablaHash tabla, void *dato)
 {
-  //falta hacer el while
-  // Calculamos la posicion del dato dado, de acuerdo a la funcion hash.
-  unsigned idx = tabla->hash(dato) % tabla->capacidad;
+  unsigned k = 0;
+  unsigned capacidad = tabla->capacidad;
+  unsigned eliminado = 0;
 
-  // Retornar si la casilla estaba vacia.
-  if (tabla->elems[idx].dato == NULL)
-    return;
-  // Vaciar la casilla si hay coincidencia.
-  else if (tabla->comp(tabla->elems[idx].dato, dato) == 0 && !tabla->elems[idx].deleted)
+  while (k < capacidad && !eliminado)
   {
-    tabla->numElems--;
-    tabla->destr(tabla->elems[idx].dato);
-    tabla->elems[idx].deleted = 1;
-    return;
+
+    // Calculamos la posicion del dato dado, de acuerdo a la funcion hash.
+    unsigned idx =  (tabla->hash(dato) + k) % tabla->capacidad;
+
+    // Retornar si la casilla estaba vacia.
+    if (tabla->elems[idx].dato == NULL)
+      eliminado = 1;
+    // Vaciar la casilla si hay coincidencia.
+    else if (tabla->comp(tabla->elems[idx].dato, dato) == 0 && !tabla->elems[idx].deleted)
+    {
+      tabla->numElems--;
+      tabla->destr(tabla->elems[idx].dato);
+      tabla->elems[idx].deleted = 1;
+      eliminado = 1;
+    }
+
+    k++;
+
   }
 }
 

@@ -25,14 +25,24 @@ unsigned hash(void *n) {
 
 int main() {
 
-    TablaHash tablahash = tablahash_crear(20, copia_entero, comparar, destruir, hash);
-    int numeros[] = { 70, 60, 40, 7, 80 };
+    TablaHash tablahash = tablahash_crear(5, copia_entero, comparar, destruir, hash);
+    int numeros[] = { 70, 60, 40, 7, 80, 90, 93 };
     tablahash_insertar(tablahash, numeros);
     tablahash_insertar(tablahash, &numeros[1]);
     tablahash_insertar(tablahash, &numeros[2]);
     tablahash_insertar(tablahash, &numeros[3]);
     tablahash_insertar(tablahash, &numeros[4]);
     imprimir_tabla(tablahash);
+    printf("---------- cantidad de elementos: %d\n", tablahash_nelems(tablahash));
+    tablahash_eliminar(tablahash, &numeros[1]);
+    imprimir_tabla(tablahash);
+    printf("---------- cantidad de elementos: %d\n", tablahash_nelems(tablahash));
+    tablahash_insertar(tablahash, &numeros[5]);
+    imprimir_tabla(tablahash);
+    printf("---------- cantidad de elementos: %d\n", tablahash_nelems(tablahash));
+    tablahash_insertar(tablahash, &numeros[5]);
+    imprimir_tabla(tablahash);
+    printf("---------- cantidad de elementos: %d\n", tablahash_nelems(tablahash));
     tablahash_destruir(tablahash);
 
     return 0;
