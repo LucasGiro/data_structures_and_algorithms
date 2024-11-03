@@ -110,18 +110,13 @@ void tablahash_insertar(TablaHash tabla, void *dato)
     return;
   }
 
-  printf("esta ocupado\n");
-
   CasillaHash *casilla = &tabla->elems[idx];
 
   unsigned k = 0;
   unsigned capacidad = tabla->capacidad;
 
-  printf("No deberia entrar al while\n");
-
   while (casilla->sig != NULL && k < capacidad && tabla->comp(casilla->sig->dato, dato))
   {
-    printf("Entré al while\n");
     casilla = casilla->sig;
     k++;
   }
@@ -134,7 +129,6 @@ void tablahash_insertar(TablaHash tabla, void *dato)
 
   if (casilla->sig != NULL && tabla->comp(casilla->sig->dato, dato) == 0)
   {
-    printf("No deberia entrar al while\n");
     tabla->destr(casilla->sig->dato);
     casilla->sig->dato = tabla->copia(dato);
     return;
