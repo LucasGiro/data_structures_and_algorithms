@@ -41,6 +41,9 @@ int main() {
     tablahash_insertar(tablahash, &numeros[4]);
     imprimir_tabla(tablahash);
     printf("----------------------\n");
+    tablahash_eliminar(tablahash, &numeros[3]);
+    imprimir_tabla(tablahash);
+    printf("----------------------\n");
     /*printf("---------- cantidad de elementos: %d\n", tablahash_nelems(tablahash));
     tablahash_eliminar(tablahash, &numeros[1]);
     imprimir_tabla(tablahash);

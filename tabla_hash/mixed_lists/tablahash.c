@@ -193,8 +193,47 @@ void tablahash_eliminar(TablaHash tabla, void *dato)
     tabla->numElems--;
     tabla->destr(tabla->elems[idx].dato);
     tabla->elems[idx].dato = NULL;
+
+    if (tabla->elems[idx].sig != NULL) {
+      tabla->elems[idx].dato = tabla->elems[idx].sig->dato;
+      tabla->elems[idx].sig->dato = NULL;
+      CasillaHash *siguiente_casilla = tabla->elems[idx].sig;
+      tabla->elems[idx].sig = tabla->elems[idx].sig->sig;
+      siguiente_casilla->sig = NULL;
+    }
     return;
   }
+
+  CasillaHash *casilla_actual = &tabla->elems[idx];
+  CasillaHash *siguiente_casilla = tabla->elems[idx].sig;
+  unsigned k = 1;
+  unsigned capacidad = tabla->capacidad;
+
+  while (k < capacidad && siguiente_casilla != NULL && tabla->comp(siguiente_casilla->dato, dato) != 0) {
+    casilla_actual = siguiente_casilla;
+    siguiente_casilla = siguiente_casilla->sig;
+  }
+
+  if (k == capacidad || siguiente_casilla == NULL) {
+    printf("no se ah encontrado el elemento\n");
+    return;
+  }
+
+  if (siguiente_casilla->sig != NULL) {
+    tabla->numElems--;
+    tabla->destr(siguiente_casilla->dato);
+    siguiente_casilla->dato = siguiente_casilla->sig->dato;
+    siguiente_casilla->sig->dato = NULL;
+    CasillaHash *aux = siguiente_casilla->sig;
+    siguiente_casilla->sig = siguiente_casilla->sig->sig;
+    aux->sig = NULL;
+  } else {
+    casilla_actual->sig = NULL;
+    tabla->numElems--;
+    tabla->destr(siguiente_casilla->dato);
+    siguiente_casilla->dato = NULL;
+  }
+
 }
 
 void imprimir_tabla(TablaHash tabla)
